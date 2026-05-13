@@ -1,0 +1,74 @@
+🚀 Veri okunuyor ve 'Premium' özellikler türetiliyor...
+🛡️ Veri bölünüyor ve Aykırı Değerler Train seti üzerinden tıraşlanıyor...
+🛡️ Tıraşlanmış veriler üzerinden Vektörleştirme ve Polinom açılımı yapılıyor...
+
+============================================================
+ 🎓 ULTIMATE PREMIUM TRAINING STARTING (LEAK-FREE & BUG-FIXED) 
+============================================================
+
+>>> Linear_Regression Eğitimi Başlıyor...
+   📉 Pipeline + CrossValidator uygulanıyor...
+   [OK] Linear_Regression -> Log RMSE: 2.1410 | R2: 0.5686
+   [REAL] Linear_Regression -> Gerçek RMSE (Para): 7221.50 | Gerçek MAE (Para): 2190.31
+   ✅ Model MLflow'a kaydedildi.
+   📊 Linear_Regression için Residual analizi yapılıyor...
+   ✅ Residual analizi MLflow'a kaydedildi: /app/ml_models/plots/Linear_Regression_residual_analysis.png
+   ✅ Feature Importance MLflow'a kaydedildi.
+
+>>> Decision_Tree Eğitimi Başlıyor...
+   🔍 Optuna + 3-Fold CV ile derin optimizasyon yapılıyor...
+   [OK] Decision_Tree -> Log RMSE: 1.0631 | R2: 0.8936
+   [REAL] Decision_Tree -> Gerçek RMSE (Para): 2394.04 | Gerçek MAE (Para): 569.44
+   ✅ Model MLflow'a kaydedildi.
+   📊 Decision_Tree için Residual analizi yapılıyor...
+   ✅ Residual analizi MLflow'a kaydedildi: /app/ml_models/plots/Decision_Tree_residual_analysis.png
+   ✅ Feature Importance MLflow'a kaydedildi.
+
+>>> Random_Forest Eğitimi Başlıyor...
+   🔍 Optuna + 3-Fold CV ile derin optimizasyon yapılıyor...
+   [OK] Random_Forest -> Log RMSE: 1.0635 | R2: 0.8935
+   [REAL] Random_Forest -> Gerçek RMSE (Para): 2330.46 | Gerçek MAE (Para): 531.37
+   ✅ Model MLflow'a kaydedildi.
+   📊 Random_Forest için Residual analizi yapılıyor...
+   ✅ Residual analizi MLflow'a kaydedildi: /app/ml_models/plots/Random_Forest_residual_analysis.png
+   ✅ Feature Importance MLflow'a kaydedildi.
+
+>>> GBT_Regressor Eğitimi Başlıyor...
+   🔍 Optuna + 3-Fold CV ile derin optimizasyon yapılıyor...
+   [OK] GBT_Regressor -> Log RMSE: 1.0560 | R2: 0.8950
+   [REAL] GBT_Regressor -> Gerçek RMSE (Para): 2232.01 | Gerçek MAE (Para): 529.70
+   ✅ Model MLflow'a kaydedildi.
+   📊 GBT_Regressor için Residual analizi yapılıyor...
+   ✅ Residual analizi MLflow'a kaydedildi: /app/ml_models/plots/GBT_Regressor_residual_analysis.png
+   ✅ Feature Importance MLflow'a kaydedildi.
+
+>>> GLR Eğitimi Başlıyor...
+   📉 Pipeline + CrossValidator uygulanıyor...
+   [OK] GLR -> Log RMSE: 2.1410 | R2: 0.5686
+   [REAL] GLR -> Gerçek RMSE (Para): 7221.50 | Gerçek MAE (Para): 2190.31
+   ✅ Model MLflow'a kaydedildi.
+   📊 GLR için Residual analizi yapılıyor...
+   ✅ Residual analizi MLflow'a kaydedildi: /app/ml_models/plots/GLR_residual_analysis.png
+   ✅ Feature Importance MLflow'a kaydedildi.
+
+📊 Model Karşılaştırma Grafikleri oluşturuluyor...
+   ✅ Karşılaştırma tablosu: /app/ml_models/plots/model_comparison_results.csv
+   ✅ Artifact kaydedildi: /app/ml_models/plots/model_comparison_metrics.png
+   ✅ Artifact kaydedildi: /app/ml_models/plots/model_comparison_real_metrics.png
+   ✅ Artifact kaydedildi: /app/ml_models/plots/model_comparison_results.csv
+🏆 En İyi Model: GBT_Regressor (R²: 0.8950)
+
+================================================================================
+ 📋 MODEL KARŞILAŞTIRMA SONUÇLARI
+================================================================================
+Model                        RMSE        MAE         R²    Real RMSE     Real MAE
+--------------------------------------------------------------------------------
+Linear_Regression          2.1410     1.9274     0.5686      7221.50      2190.31
+Decision_Tree              1.0631     0.6552     0.8936      2394.04       569.44
+Random_Forest              1.0635     0.6731     0.8935      2330.46       531.37
+GBT_Regressor              1.0560     0.6449     0.8950      2232.01       529.70
+GLR                        2.1410     1.9274     0.5686      7221.50      2190.31
+================================================================================
+
+✅ TÜM MODELLER TAMAMLANDI! MLflow Dashboard'dan sonuçları inceleyebilirsiniz.
+📄 Debug log dosyası: /app/ml_models/mlflow_debug.txt

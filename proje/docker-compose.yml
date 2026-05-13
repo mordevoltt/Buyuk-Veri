@@ -1,0 +1,74 @@
+services:
+  # Zookeeper
+  zookeeper:
+    build: ./zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - bigdata-network
+
+  # Kafka Broker
+  kafka:
+    build: ./kafka
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_ANONYMOUS_LOGIN=yes
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+    depends_on:
+      - zookeeper
+    networks:
+      - bigdata-network
+
+  # Python Producer (Özel Uygulama Konteyneri)
+  producer:
+    build: ./producer
+    container_name: python-producer
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - MSG_PER_SECOND=100
+      - DATA_FILE_PATH=/app/data/online_retail_II.csv
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - kafka
+    networks:
+      - bigdata-network
+
+  # Spark Master
+  spark-master:
+    build: ./spark
+    container_name: spark-master
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    networks:
+      - bigdata-network
+
+  # Spark Worker
+  spark-worker:
+    build: ./spark
+    container_name: spark-worker
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=1
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+    depends_on:
+      - spark-master
+    networks:
+      - bigdata-network
+
+networks:
+  bigdata-network:
+    driver: bridge
