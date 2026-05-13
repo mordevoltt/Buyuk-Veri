@@ -1,0 +1,57 @@
+Aşağıdaki prompt, projenizin her bir dosyasını, içindeki fonksiyonları, uygulanan matematiksel yöntemleri ve mimari kararları kapsayacak şekilde "maksimum detayda" güncellenmiştir.
+
+--- PROMPT BAŞLANGICI ---
+
+Lütfen aşağıda her bir dosyası, kod bloğu ve mimari kararı en ince ayrıntısına kadar detaylandırılmış olan "Büyük Veri ve Makine Öğrenmesi Tahmin Hattı" projesi için 15-20 dakikalık, profesyonel, akademik ve teknik derinliği en üst seviyede olan bir sunum taslağı hazırla. Sunum slaytlar şeklinde olmalı, her slayt için hem "Slayt İçeriği" hem de "Detaylı Konuşmacı Notları" içermelidir.
+
+### 🏗️ PROJE MİMARİSİ VE KOD YAPISI ANALİZİ
+
+1. ALTYAPI VE ORKESTRASYON (docker-compose.yml):
+   - **Mikroservis Mimarisi:** Zookeeper (2181), Kafka (9092), Python Producer, Spark Master (8080/7077) ve Spark Worker konteynerleri üzerine kurulu yapı.
+   - **Ağ Yapısı:** 'bigdata-network' (bridge) üzerinden izole ve düşük gecikmeli iletişim.
+   - **Konteyner Detayları:** 'spark-worker' servisi için ayrılan 1G RAM ve 1 çekirdekli kısıtlı kaynak altında yüksek verimli veri işleme.
+
+2. VERİ ÜRETİMİ VE KAFKA ENTEGRASYONU (producer/producer.py):
+   - **Bağlantı Mekanizması:** Kafka broker'a bağlanana kadar 5 saniye aralıklarla 10 kez deneme yapan hata toleranslı 'retry' döngüsü.
+   - **Veri Dönüşümü:** Pandas ile CSV okuma sonrası 'json_serializer' üzerinden UTF-8 serileştirme.
+   - **Dinamik Şema:** 'timestamp' (ISO), 'kullanici ID' (Customer ID), 'olay tipi' (purchase) ve tüm satır verisini içeren 'raw_data' sözlüğü ile veri zenginleştirme.
+
+3. REAL-TIME STREAM PROCESSING (spark/spark_streaming.py):
+   - **Medallion Architecture:**
+     - **Bronze Layer:** Kafka'dan gelen ham baytların 'cast(value as string)' ile okunup meta-verilerle Delta Lake'e doğrudan yazımı.
+     - **Silver Layer:** 'from_json' ile şema uygulama, 'watermarking' (10 dakika) ile geç gelen veri yönetimi ve 'dropDuplicates' ile veri temizliği.
+     - **Gold Layer:** 'window(processed_timestamp, "1 minute")' fonksiyonu ile gerçek zamanlı agregasyonlar.
+   - **Hata Yönetimi:** Her katmanda ayrı 'checkpointLocation' ve 'awaitAnyTermination' ile kesintisiz çalışma.
+
+4. KAPSAMLI EDA VE ANALİTİK (spark/eda_analysis.py):
+   - **Görselleştirme Portfolyosu:**
+     - `00_general_stats.png`: Toplam kayıt, benzersiz kullanıcı ve olay çeşitliliği özeti.
+     - `01_missing_values.png`: Sütun bazlı eksiklik analizi (Null count).
+     - `02_hourly_trend.png` / `03_daily_trend.png`: Saatlik ve günlük işlem trafiği analizi.
+     - `04_event_pie_chart.png`: Olay tiplerinin pazar payı dağılımı.
+     - `05_user_activity_dist.png`: Kullanıcı aktivite yoğunluğunun histogram ve KDE analizi.
+
+5. İLERİ SEVİYE ÖZELLİK MÜHENDİSLİĞİ (spark/feature_engineering.py):
+   - **"Dinamik Zaman Tüneli" (Dynamic Time Tunnel) Stratejisi:** 
+     - Veri sızıntısını (Leakage) %100 önlemek için verinin toplam ömrü üzerinden hesaplanan %80/'%20 'global_cut_off' noktası.
+     - **Feature Set (%80 Geçmiş):** 'total_interactions', 'unique_items_viewed', 'active_days_count', 'recency_days' (cut-off tarihine göre) ve 'avg_daily_activity'.
+     - **Target Set (%20 Gelecek):** Kullanıcının gelecek dönemdeki 'total_spending' değeri.
+   - **Veri Kaydı:** Sonuçların 'Gold' katmanına ACID uyumlu Delta formatında üzerine yazılması.
+
+6. MAKİNE ÖĞRENMESİ VE DENEY TAKİBİ (ml_models/regression_training.py):
+   - **İşlem Hattı (Pipeline):** `VectorAssembler`, `PolynomialExpansion` (2. derece), `RobustScaler` (Outlier direnci).
+   - **Algoritmalar:** Linear Regression (L-BFGS), Decision Tree, Random Forest, GBT Regressor ve Generalized Linear Regression (Gaussian family).
+   - **Optimizasyon:** Optuna kütüphanesi ile 50 deneme üzerinden model bazlı derin hiperparametre arama ve 3-Fold Cross Validation.
+   - **Değerlendirme:** 'log1p' ve 'expm1' dönüşümleriyle logaritmik hata paylarından gerçek para birimi (₺) bazlı RMSE ve MAE değerlerine geçiş.
+   - **MLflow Artifacts:** Residual plots, Q-Q plots ve Feature Importance görsellerinin otomatik merkezi kaydı.
+
+7. İNTERAKTİF DASHBOARD (dashboard/app.py):
+   - **Fonksiyonellik:** MLflow API ile modellerin dinamik yüklenmesi, metrik karşılaştırma tabloları ve feature importance görsellerinin Streamlit üzerinden sunumu.
+
+### 🎯 SUNUMDAN BEKLENTİLER:
+- Dinleyiciye mimari kararların teknik nedenlerini açıkla (Örn: "Neden Delta Lake?", "Neden RobustScaler?").
+- Kodda uygulanan sızıntı önleme ve Optuna optimizasyonu gibi "kritik hamleleri" teknik olarak vurgula.
+- Görsel kullanımında eldeki PNG dosyalarına (Örn: model_comparison_metrics.png) slayt bazlı atıfta bulun.
+- Teknik terimleri (ACID, Watermarking, Feature Leakage, Polynomial Expansion, Cross-Validation) profesyonelce kullan.
+
+--- PROMPT BİTİŞİ ---
